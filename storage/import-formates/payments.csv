@@ -1,0 +1,1 @@
+BookingID_OR,CustomerPhoneNumber_OR,PayMode(Cash_Cheque_Online),PaymentAmount,PaymentDate,CashReceiverName(If_CASH),ChequeIssueto(If_Cheque),ChequeNo(IF_Cheque),BankName(IF_Cheque/Online),IFSC_CODE(If_Cheque),PaymentStatus,txnId(If_ONLINE),PlatformUsed(Paytm/Online/Gpay/NetBanking)

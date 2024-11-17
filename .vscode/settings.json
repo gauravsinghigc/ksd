@@ -1,0 +1,14 @@
+{
+    "html.format.templating": true,
+    "trailing-spaces.trimOnSave": true,
+    "files.autoSave": "afterDelay",
+    "html.format.endWithNewline": true,
+    "eslint.format.enable": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnPaste": true,
+    "editor.formatOnSave": true,
+    "editor.minimap.maxColumn": 200,
+    "editor.wordWrapColumn": 150,
+    "editor.tabSize": 1,
+    "vetur.format.options.tabSize": 1
+}

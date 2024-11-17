@@ -1,0 +1,72 @@
+.area-description {
+ position: relative;
+ width: 100%;
+ box-shadow: 0px 0px 1px black;
+ padding: 0.5rem;
+ font-size: 1rem !important;
+ background-color: white;
+ z-index: 99999;
+}
+
+#areadesc {
+ font-size: 1rem !important;
+}
+
+.project-desc {
+ position: absolute;
+ top: 0.5rem;
+ left: 0.5rem;
+ width: 390px;
+ box-shadow: 0px 0px 1px black;
+ padding: 0.5rem;
+}
+
+.zoom:hover {
+ transform: scale(5);
+ z-index: 9999999999;
+}
+
+.zoomed {
+ transform: scale(5);
+ z-index: 9999999999;
+}
+
+.project-desc tr th,
+.project-desc tr td {
+ font-size: 0.75rem !important;
+ padding: 0.2rem !important;
+ background-color: white !important;
+}
+
+.project-desc tr th {
+ width: 30%;
+}
+
+.project-desc tr th {
+ color: grey !important;
+}
+
+.plot-desc {
+ position: absolute;
+ box-shadow: 0px 0px 1px black;
+ right: 0.5rem;
+ top: 0.5rem;
+ width: 390px;
+ height: max-content;
+ z-index: 9999;
+ padding: 0.5rem;
+}
+.active {
+ background-color: green !important;
+ color: white !important;
+}
+
+.hold {
+ background-color: yellow !important;
+ color: black !important;
+}
+
+.sold {
+ background-color: red !important;
+ color: white !important;
+}
