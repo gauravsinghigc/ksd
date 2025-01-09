@@ -67,7 +67,7 @@ if (isset($_POST['CreateDevelopmentCharges'])) {
   $checkcleardate = $_POST['checkcleardate'];
   $checkissuedate = $_POST['checkissuedate'];
   $devpaymentupdatedat = $checkissuedate;
-  $devpaymentdetails = "Bank: " . $devpaymentbankname . ",<br> IFSC: $ifsc <br> Cheque No: $checknumber,<br> IssuedTo: $checkissuedto,<br> Issue At: " . DATE_FORMATE2("d M, Y", $checkissuedate) . ", <br> Clear At: ". DATE_FORMATE2("d M, Y", $checkcleardate).",<br> Cheque Received By : $devpaymentreceivedby";
+  $devpaymentdetails = "Bank: " . $devpaymentbankname . ",<br> IFSC: $ifsc <br> Cheque No: $checknumber,<br> IssuedTo: $checkissuedto,<br> Issue At: " . DATE_FORMATE2("d M, Y", $checkissuedate) . ", <br> Clear At: " . DATE_FORMATE2("d M, Y", $checkcleardate) . ",<br> Cheque Received By : $devpaymentreceivedby";
   $devpaymentdetails = SECURE($devpaymentdetails, "e");
  }
 
@@ -114,7 +114,14 @@ if (isset($_POST['CreateDevelopmentCharges'])) {
  $Save = UPDATE_TABLE(
   "developmentcharges",
   [
-   "developmentchargepercentage", "developmentchargetitle", "developmentchargetype", "developmentcharge", "developementchargeamount", "developmentchargedescription", "developmentchargecreatedat", "developmentchargestatus"
+   "developmentchargepercentage",
+   "developmentchargetitle",
+   "developmentchargetype",
+   "developmentcharge",
+   "developementchargeamount",
+   "developmentchargedescription",
+   "developmentchargecreatedat",
+   "developmentchargestatus"
   ],
   "devchargesid='$devchargesid'"
  );

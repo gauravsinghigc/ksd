@@ -9,12 +9,12 @@ require '../require/admin/sessionvariables.php';
 
 //start your actions from here
 if (isset($_POST['SaveWalkins'])) {
- $WalkinName = $_POST["WalkinName"];
- $WalkinPhone = $_POST["WalkinPhone"];
- $WalkinEmailid = $_POST["WalkinEmailid"];
- $WalkinTypes = $_POST["WalkinTypes"];
- $WalkinAddress = $_POST["WalkinAddress"];
- $WalkinsRemarks = SECURE($_POST["WalkinsRemarks"], "e");
+ $WalkinName = POST("WalkinName");
+ $WalkinPhone = POST("WalkinPhone");
+ $WalkinEmailid = POST("WalkinEmailid");
+ $WalkinTypes = POST("WalkinTypes");
+ $WalkinAddress = SECURE(POST("WalkinAddress"), "e");
+ $WalkinsRemarks = SECURE(POST("WalkinsRemarks"), "e");
  $WalkinCreatedAt = date("d M, Y");
 
  $Save = SAVE("walkins", ["WalkinName", "WalkinPhone", "WalkinAddress", "WalkinEmailid", "WalkinTypes", "WalkinsRemarks", "WalkinCreatedAt"]);

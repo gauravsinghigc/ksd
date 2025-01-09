@@ -61,9 +61,8 @@ if (isset($_POST['create_new_project'])) {
     $project_descriptions = $_POST['project_descriptions'];
     $updated_at = RequestDataTypeDate();
     $created_at = DATE_FORMATE("y-m-d", "created_at");
-    $project_status = $_POST['project_status'];
 
-    $update = UPDATE("UPDATE projects SET project_status='$project_status', project_title='$project_title', project_type='$project_type', project_measure_unit='$project_measure_unit', project_area='$project_area', project_descriptions = '$project_descriptions', updated_at='$updated_at' where Projects_id='$Projects_id'");
+    $update = UPDATE("UPDATE projects SET  project_title='$project_title', project_type='$project_type', project_measure_unit='$project_measure_unit', project_area='$project_area', project_descriptions = '$project_descriptions', updated_at='$updated_at' where Projects_id='$Projects_id'");
     if ($update == true) {
         LOCATION("success", "$project_title is updated!", "../admin/projects/");
     } else {
@@ -259,115 +258,4 @@ if (isset($_POST['create_new_project'])) {
 
     $Update = UPDATE_DATA("project_stages", $data, "ProjectStageId='$ProjectStageId'", false);
     RESPONSE($Update, "Project Stage Details are updated successfully!", "Unable to update project Stage Details!");
-
-    //project block creations
-} elseif (isset($_POST['SaveProjectBlockRecord'])) {
-    $project_blocks = [
-        "project_main_id" => SECURE($_POST['project_main_id'], "d"),
-        "project_block_name" => $_POST['project_block_name'],
-        "project_block_descriptions" => SECURE($_POST['project_block_descriptions'], "e")
-    ];
-    $Save = INSERT("project_blocks", $project_blocks);
-    RESPONSE($Save, "Project Block added successfully!", "Unable to add project block at the moment!");
-
-    //project block's floor record entry
-} elseif (isset($_POST['SaveProjectBlockFloorRecord'])) {
-    $projects_floors = [
-        "project_main_id" => SECURE($_POST['project_main_id'], "d"),
-        "projects_floor_name" => $_POST['projects_floor_name'],
-        "projects_floors_tag" => $_POST['projects_floors_tag'],
-        "project_floors_desc" => SECURE($_POST['project_floors_desc'], "e"),
-        "projects_floors_block_id" => $_POST['projects_floors_block_id'],
-    ];
-    $Save = INSERT("projects_floors", $projects_floors);
-    RESPONSE($Save, "Project Floor added successfully!", "Unable to add project floor at the moment!");
-
-    //CREATE PROPERTY UNITS
-} elseif (isset($_POST['SaveProjectBlockFloorUnitsRecord'])) {
-    $project_units = [
-        "project_id" => SECURE($_POST['project_id'], "d"),
-        "project_block_id" => SECURE($_POST['project_block_id'], "d"),
-        "project_floor_id" => $_POST['project_floor_id'],
-        "projects_unit_type" => $_POST['projects_unit_type'],
-        "projects_unit_name" => $_POST['projects_unit_name'],
-        "project_unit_area" => $_POST['project_unit_area'],
-        "unit_per_price" => $_POST['unit_per_price'],
-        "project_unit_price" => $_POST['project_unit_area'] * $_POST['unit_per_price'],
-        "project_unit_description" => SECURE($_POST['project_unit_description'], "e"),
-        "project_unit_bhk_type" => $_POST['project_unit_bhk_type'],
-        "project_unit_highlights" => $_POST['project_unit_highlights'],
-        "project_unit_measurement_unit" => $_POST['project_unit_measurement_unit'],
-        "project_unit_status" => "ACTIVE",
-        "unit_broker_rate" => $_POST['unit_broker_rate']
-    ];
-    $Save = INSERT("project_units", $project_units);
-    RESPONSE($Save, "Project Unit added successfully!", "Unable to add project unit at the moment!");
-
-    //update project floors
-} elseif (isset($_POST['UpdateProjectBlockFloorRecord'])) {
-    $projects_floors_id = SECURE($_POST['projects_floors_id'], "d");
-
-    $projects_floors = [
-        "projects_floor_name" => $_POST['projects_floor_name'],
-        "projects_floors_tag" => $_POST['projects_floors_tag'],
-        "project_floors_desc" => SECURE($_POST['project_floors_desc'], "e"),
-        "projects_floors_block_id" => $_POST['projects_floors_block_id'],
-    ];
-
-    $Save = UPDATE_DATA("projects_floors", $projects_floors, "projects_floors_id='$projects_floors_id'");
-    RESPONSE($Save, "Project Floor update successfully!", "Unable to add project floor at the moment!");
-
-    //update project units
-} elseif (isset($_POST['UpdateProjectBlockFloorUnitsRecord'])) {
-    $project_units_id = SECURE($_POST['project_units_id'], "d");
-
-    $project_units = [
-        "project_floor_id" => $_POST['project_floor_id'],
-        "projects_unit_type" => $_POST['projects_unit_type'],
-        "projects_unit_name" => $_POST['projects_unit_name'],
-        "project_unit_area" => $_POST['project_unit_area'],
-        "unit_per_price" => $_POST['unit_per_price'],
-        "project_unit_price" => $_POST['project_unit_area'] * $_POST['unit_per_price'],
-        "project_unit_description" => SECURE($_POST['project_unit_description'], "e"),
-        "project_unit_bhk_type" => $_POST['project_unit_bhk_type'],
-        "project_unit_highlights" => $_POST['project_unit_highlights'],
-        "project_unit_measurement_unit" => $_POST['project_unit_measurement_unit'],
-        "project_unit_status" => "ACTIVE",
-        "unit_broker_rate" => $_POST['unit_broker_rate']
-    ];
-    $Save = UPDATE_DATA("project_units", $project_units, "project_units_id='$project_units_id'");
-    RESPONSE($Save, "Project Unit updated successfully!", "Unable to update project unit at the moment!");
-
-    //update project block
-} elseif (isset($_POST['UpdateProjectBlockRecord'])) {
-    $project_block_id = SECURE($_POST['project_block_id'], "d");
-
-    $project_blocks = [
-        "project_block_name" => $_POST['project_block_name'],
-        "project_block_descriptions" => SECURE($_POST['project_block_descriptions'], "e")
-    ];
-    $Save = UPDATE_DATA("project_blocks", $project_blocks, "project_block_id='$project_block_id'");
-    RESPONSE($Save, "Project Block updated successfully!", "Unable to updated project block at the moment!");
-
-    //remove project units
-} elseif (isset($_GET['remove_project_units'])) {
-    $project_units_id = SECURE($_GET['control_id'], "d");
-    $Delete = DELETE_FROM("project_units", "project_units_id='$project_units_id'");
-    RESPONSE($Delete, "Project Unit deleted successfully!", "Unable to delete project unit at the moment!");
-
-    //remove project floors
-} elseif (isset($_GET['remove_project_floors'])) {
-    $projects_floors_id = SECURE($_GET['control_id'], "d");
-    $Delete = DELETE_FROM("projects_floors", "projects_floors_id='$projects_floors_id'");
-    RESPONSE($Delete, "Project Floor deleted successfully!", "Unable to delete project floor at the moment!");
-
-    //remove project blocks
-} elseif (isset($_GET['remove_project_blocks'])) {
-    $project_block_id = SECURE($_GET['control_id'], "d");
-    $Delete = DELETE_FROM("project_blocks", "project_block_id='$project_block_id'");
-    if ($Delete == true) {
-        unset($_SESSION['VIEW_PROJECT_BLOCK_ID']);
-        $access_url = ADMIN_URL . "/projects/details/";
-    }
-    RESPONSE($Delete, "Project Block deleted successfully!", "Unable to delete project block at the moment!");
 }

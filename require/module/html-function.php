@@ -171,8 +171,8 @@ function CONFIRM_DELETE_POPUP($id = null, array $Requests = null, $controller = 
         </p>
       </div>
       <div class="activity-action">
-        <a onclick="Databar('<?php echo $id; ?>')" class="btn btn-lg btn-danger"><?php echo ActionDeleteCancel; ?></a>
-        <a href="<?= $Controller_Requests ?>" class="btn btn-lg btn-success"><?php echo ActionDeleteConfirm; ?></a>
+        <a onclick="Databar('<?php echo $id; ?>')" class="btn btn-lg btn-danger" style="padding:0.5rem 1rem !important;font-size:1rem !important;"><?php echo ActionDeleteCancel; ?></a>
+        <a href="<?= $Controller_Requests ?>" class="btn btn-lg btn-success" style="padding:0.5rem 1rem !important;font-size:1rem !important;"><?php echo ActionDeleteConfirm; ?></a>
       </div>
     </div>
   </section>

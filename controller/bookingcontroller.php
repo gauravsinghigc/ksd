@@ -31,7 +31,6 @@ if (isset($_POST['completebookings'])) {
     $onlinepaidamount = $net_paid;
     $project_list_id = $_SESSION['project_list_id'];
     $possession_notes = $_SESSION['possession_notes'];
-    $parking_status = $_SESSION['parking_status'];
 
     //payment
     $payment_mode = $_SESSION['payment_mode'];
@@ -104,7 +103,7 @@ if (isset($_POST['completebookings'])) {
 
     //save booking project details
     $status = "ACTIVE";
-    $savebookings = SAVE("bookings", ["possession_notes", "parking_status", "ref_no", "crn_no", "emi_months", "booking_date", "clearing_date", "possession", "customer_id", "partner_id", "company_id", "project_name", "project_area", "unit_name", "unit_area", "unit_rate", "unit_cost", "net_payable_amount", "chargename", "charges", "discountname", "discount", "status", "project_list_id", "project_unit_id", "created_at"]);
+    $savebookings = SAVE("bookings", ["possession_notes", "ref_no", "crn_no", "emi_months", "booking_date", "clearing_date", "possession", "customer_id", "partner_id", "company_id", "project_name", "project_area", "unit_name", "unit_area", "unit_rate", "unit_cost", "net_payable_amount", "chargename", "charges", "discountname", "discount", "status", "project_list_id", "project_unit_id", "created_at"]);
     if ($savebookings == true) {
         $SelectBooking = SELECT("SELECT * FROM bookings where customer_id='$customer_id' and partner_id='$partner_id' and company_id='$company_id' ORDER BY bookingid DESC");
         $fetchBooking = mysqli_fetch_array($SelectBooking);
@@ -286,9 +285,9 @@ if (isset($_POST['completebookings'])) {
     $clearing_date = date("Y-m-d", strtotime($_POST["clearing_date"]));
     $booking_date = $_POST['booking_date'];
     $created_at = $_POST['created_at'];
-    $parking_status = $_POST['parking_status'];
 
-    $Update = UPDATE("UPDATE bookings SET parking_status='$parking_status', booking_date='$booking_date', created_at='$created_at', clearing_date='$clearing_date', possession='$possession', possession_notes='$possession_notes', possession_update_date='$possession_update_date' where bookingid='$bookingid'");
+
+    $Update = UPDATE("UPDATE bookings SET booking_date='$booking_date', created_at='$created_at', clearing_date='$clearing_date', possession='$possession', possession_notes='$possession_notes', possession_update_date='$possession_update_date' where bookingid='$bookingid'");
 
     $Update = UPDATE("UPDATE bookings SET possession='$possession', possession_notes='$possession_notes', possession_update_date='$possession_update_date' where bookingid='$bookingid'");
     RESPONSE($Update, "Possession Details are updated!", "Unable to update Possession Details");
@@ -861,4 +860,308 @@ if (isset($_POST['completebookings'])) {
         $Save = UPDATE_DATA("booking_loans", $booking_loans, "booking_main_id='$booking_main_id'");
     }
     RESPONSE($Save, "Bank Load Details are updated successfully!", "Unable to update bank loan details!");
+
+    //create maintenance demand letter for maintenance and other payments.
+} elseif (isset($_POST['GenerateMaintenanceDemandLetter'])) {
+    $PhonerNumber = SECURE($_POST['PhoneNumber'], "d");
+    $EmailId = SECURE($_POST['EmailId'], "d");
+    $Name = SECURE($_POST['Name'], "d");
+    $PayReqBookingId = SECURE($_POST['PayReqBookingId'], "d");
+    $MainBookingID = SECURE($_POST["MainBookingID"], "d");
+    $duedate = DATE_FORMATE2("d M, Y", $_POST['PayRequestDueDate']);
+    $PlotNo = FETCH("SELECT * FROM bookings where bookingid='$PayReqBookingId'", "unit_name");
+    $PlotNo = "B$PayReqBookingId or Plot No:$PlotNo in Yash Vihar";
+    $currentdue = $_POST['PayRequestingAmount'];
+    $PayReqTitle = $_POST['PayReqTitle'];
+    $PayReqPayTags = $_POST['PayReqPayTags'];
+
+    $data = array(
+        "PayReqBookingId" => $PayReqBookingId,
+        "PayReqDate" => $_POST['PayReqDate'],
+        "PayRequestingAmount" => $_POST['PayRequestingAmount'],
+        "PayRequestDueDate" => $_POST['PayRequestDueDate'],
+        "PayRequestDescriptions" => $_POST['PayRequestDescriptions'],
+        "PayRequestSendBy" => LOGIN_UserId,
+        "PayReqSendDate" => RequestDataTypeDate,
+        "PayReqSendDescsriptions" => $_POST['PayReqSendDescsriptions'],
+        "PayReqType" => SECURE($_POST['PayReqType'], "d"),
+        "PayReqPayPeriod" => $_POST['PayReqPayPeriod'],
+        "PayReqTitle" => $_POST['PayReqTitle'],
+        "PayReqPayingMonths" => $_POST['PayReqPayingMonths'],
+        "PayRequestStatus" => 0,
+    );
+
+    $SAVE = INSERT("booking_pay_req", $data);
+    $dmdid = FETCH("SELECT PaymentRequestId FROM booking_pay_req ORDER BY PaymentRequestId DESC", "PaymentRequestId");
+
+    $bookingid = $PayReqBookingId;
+    $BookingSql = "SELECT * FROM bookings where bookingid='$bookingid'";
+    $customer_id = FETCH($BookingSql, "customer_id");
+    $partner_id = FETCH($BookingSql, "partner_id");
+    $CoAllotySql = "SELECT * FROM booking_alloties where BookingAllotyMainBookingId='$bookingid' and BookingAllotyFullName!=''";
+    $CustomerSql = "SELECT * FROM users where id='$customer_id'";
+    $PartnerSql = "SELECT * FROM users where id='$partner_id'";
+    $CustomerAddress = "SELECT * FROM user_address where user_id='$customer_id'";
+    $PartnerAddress = "SELECT * FROM user_address where user_id='$partner_id'";
+    $DMDSql = "SELECT * FROM booking_pay_req where PaymentRequestId='$dmdid'";
+
+    //other variables
+    $area = FETCH($BookingSql, "unit_area");
+    $areaint = GetNumbers($area);
+
+    if (isset($_POST['sms']) == "true") {
+        SMS(
+            "383153414348494e3139393432301663417896",
+            "KSDBLD",
+            "1",
+            "$PhonerNumber",
+            "Dear $Name, Your payment of Rs." . number_format($currentdue) . " for booking id $PlotNo is payable/pending. Please clear the payment before $duedate. Thanks " . "-" . " KSD BUILDTECH",
+            "1507166341523094529",
+            "GET"
+        );
+    }
+    if (isset($_POST['email']) == "true") {
+        SENDMAILS(
+            "Maintenance Demand Letter Generated!",
+            "Dear $Name",
+            "$EmailId",
+            "Your payment of Rs." . $currentdue . " for <b>$PayReqTitle ($PayReqPayTags)</b> in your booking id B$PayReqBookingId is payable/pending. Please clear the payment before $duedate. Thanks " . company_name . " KSD BUILDTECH<br><br><br>
+        <a href='" . DOMAIN . "/admin/booking/docs/dmd-m.php?id=$PayReqBookingId&dmdid=$dmdid'>View Demand letter</a>
+        ",
+        );
+    }
+    RESPONSE($SAVE, "Demand letter Generated", "Unable to generate demand letter at the moment!");
+
+    //create payment for maintenance demand letter
+} elseif (isset($_POST['GenerateDemandMaintenancePayment'])) {
+    $bookingid = $_POST['bookingid'];
+    $DemandID = $_POST['GenerateDemandMaintenancePayment'];
+    $DemandSQL = "SELECT * FROM booking_pay_req where PaymentRequestId='$DemandID'";
+
+    //payment
+    $payment_mode = $_POST['payment_mode'];
+
+    //check
+    $checkissuedto = $_POST['checkissuedto'];
+    $checknumber = $_POST['checknumber'];
+    $BankName = $_POST['BankName'];
+    $ifsc = $_POST['ifsc'];
+    $checkstatus = $_POST['checkstatus'];
+
+    //OnlineBankName
+    $onlinepaymenttype = $_POST['onlinepaymenttype'];
+    $OnlineBankName = $_POST['OnlineBankName'];
+    $transactionId = $_POST['transactionId'];
+    $payment_details = $_POST['payment_details'];
+    $transaction_status = $_POST['transaction_status'];
+
+    //cash payment
+    $cashreceivername = $_POST['cashreceivername'];
+    $cashamount = $_POST['net_paid'];
+
+    //payment date
+    if ($payment_mode == "cash") {
+        $payment_date = $_POST['cashreceivedate'];
+    } else if ($payment_mode == "check") {
+        $payment_date = $_POST['checkissuedate'];
+    } else {
+        $payment_date = $_POST['transactiondate'];
+    }
+
+    //remark
+    $net_paid = $_POST['net_paid'];
+    $payment_amount = $_POST['payment_amount'];
+    $checkamount = $net_paid;
+    $onlinepaidamount = $net_paid;
+    $paid_date = RequestDataTypeDate;
+    $created_at = RequestDataTypeDate;
+
+    //development charge payments capture
+    $developmentcharges = [
+        "bookingid" => $bookingid,
+        "developmentchargetitle" => FETCH($DemandSQL, "PayReqTitle"),
+        "developmentchargetype" => FETCH($DemandSQL, "PayReqType"),
+        "developmentcharge" =>  "FIX AMOUNT",
+        "developementchargeamount" => FETCH($DemandSQL, "PayRequestingAmount"),
+        "developmentchargedescription" => FETCH($DemandSQL, "PayReqType") . " @ Payable:" . FETCH($DemandSQL, "PayReqPayPeriod") . " - Paid for:" . FETCH($DemandSQL, "PayReqPayingMonths") . " Months.",
+        "developmentchargecreatedat" => RequestDataTypeDate,
+        "developmentchargesupdatedat" => RequestDataTypeDate,
+        "developmentchargestatus" => "CLOSED",
+    ];
+    $Insert = INSERT("developmentcharges", $developmentcharges);
+    $devchargesid = FETCH("SELECT devchargesid FROM developmentcharges ORDER BY devchargesid DESC LIMIT 1", "devchargesid");
+
+    //create payment modes
+    if ($payment_mode == "check") {
+        if ($checkstatus == "Clear") {
+            $clearedat = $_POST['clearedat'];
+        } else {
+            $clearedat = null;
+        }
+        $issuedat = $_POST['checkissuedate'];
+        $created_at = $_POST['checkissuedate'];
+
+        $developmentchargepayments = [
+            "developmentchargeid" => $devchargesid,
+            "devchargepaymentmode" => "CHEQUE",
+            "devchargepaymentamount" => $payment_amount,
+            "devpaymentreceivedby" => $checkissuedto,
+            "devpaymentbankname" => $BankName,
+            "devpaymentreleaseddate" => $clearedat,
+            "devpaymentstatus" => $checkstatus,
+            "devpaymentdetails" => "Bank Name: $BankName, Cheque Number: $checknumber, IFSC Code: $ifsc_code",
+            "devpaymentcreatedat" => $created_at,
+            "devpaymentupdatedat" => RequestDataTypeDate
+        ];
+    } else if ($payment_mode == "cash") {
+        $created_at = $_POST['cashreceivedate'];
+        $developmentchargepayments = [
+            "developmentchargeid" => $devchargesid,
+            "devchargepaymentmode" => "CASH",
+            "devchargepaymentamount" => $payment_amount,
+            "devpaymentreceivedby" => $cashreceivername,
+            "devpaymentbankname" => "CASH",
+            "devpaymentreleaseddate" => $created_at,
+            "devpaymentstatus" => "PAID",
+            "devpaymentdetails" => "cash received by $cashreceivername",
+            "devpaymentcreatedat" => $created_at,
+            "devpaymentupdatedat" => RequestDataTypeDate
+        ];
+    } else if ($payment_mode == "banking") {
+        $payment_mode = $_POST['onlinepaymenttype'];
+        $created_at = $_POST['transactiondate'];
+        $developmentchargepayments = [
+            "developmentchargeid" => $devchargesid,
+            "devchargepaymentmode" => "ONLINE",
+            "devchargepaymentamount" => $payment_amount,
+            "devpaymentreceivedby" => "$payment_mode via $transactionId",
+            "devpaymentbankname" => $OnlineBankName,
+            "devpaymentreleaseddate" => $created_at,
+            "devpaymentstatus" => $transaction_status,
+            "devpaymentdetails" => "Pay Mode: $onlinepaymenttype, Bank Name: $OnlineBankName, Txn ID: $transactionId, Reference: $payment_details",
+            "devpaymentcreatedat" => RequestDataTypeDate,
+            "devpaymentupdatedat" => RequestDataTypeDate
+        ];
+    }
+
+    //insert payment into database
+    $Insert = INSERT("developmentchargepayments", $developmentchargepayments);
+    if ($Insert == true) {
+        UPDATE("UPDATE booking_pay_req SET PayRequestStatus='1' where PaymentRequestId='$DemandID'");
+    }
+    RESPONSE($Insert, "Payment Generated", "Unable to generate payment at the moment!");
+
+    //receive other payment details
+} elseif (isset($_POST['ReceiveOtherPayment'])) {
+    $bookingid = SECURE($_POST['PayReqBookingId'], "d");
+
+    //payment
+    $payment_mode = $_POST['payment_mode'];
+
+    //check
+    $checkissuedto = $_POST['checkissuedto'];
+    $checknumber = $_POST['checknumber'];
+    $BankName = $_POST['BankName'];
+    $ifsc = $_POST['ifsc'];
+    $checkstatus = $_POST['checkstatus'];
+
+    //OnlineBankName
+    $onlinepaymenttype = $_POST['onlinepaymenttype'];
+    $OnlineBankName = $_POST['OnlineBankName'];
+    $transactionId = $_POST['transactionId'];
+    $payment_details = $_POST['payment_details'];
+    $transaction_status = $_POST['transaction_status'];
+
+    //cash payment
+    $cashreceivername = $_POST['cashreceivername'];
+    $cashamount = $_POST['net_paid'];
+
+    //payment date
+    if ($payment_mode == "cash") {
+        $payment_date = $_POST['cashreceivedate'];
+    } else if ($payment_mode == "check") {
+        $payment_date = $_POST['checkissuedate'];
+    } else {
+        $payment_date = $_POST['transactiondate'];
+    }
+
+    //remark
+    $net_paid = $_POST['net_paid'];
+    $payment_amount = $_POST['payment_amount'];
+    $checkamount = $net_paid;
+    $onlinepaidamount = $net_paid;
+    $paid_date = RequestDataTypeDate;
+    $created_at = RequestDataTypeDate;
+
+    //development charge payments capture
+    $developmentcharges = [
+        "bookingid" => $bookingid,
+        "developmentchargetitle" => $_POST['PayReqTitle'],
+        "developmentchargetype" => SECURE($_POST['PayReqType'], "d"),
+        "developmentcharge" =>  "FIX AMOUNT",
+        "developementchargeamount" => $payment_amount,
+        "developmentchargedescription" => SECURE($_POST['PayRequestDescriptions'], "e"),
+        "developmentchargecreatedat" => RequestDataTypeDate,
+        "developmentchargesupdatedat" => RequestDataTypeDate,
+        "developmentchargestatus" => "CLOSED",
+    ];
+    $Insert = INSERT("developmentcharges", $developmentcharges);
+    $devchargesid = FETCH("SELECT devchargesid FROM developmentcharges ORDER BY devchargesid DESC LIMIT 1", "devchargesid");
+
+    //create payment modes
+    if ($payment_mode == "check") {
+        if ($checkstatus == "Clear") {
+            $clearedat = $_POST['clearedat'];
+        } else {
+            $clearedat = null;
+        }
+        $issuedat = $_POST['checkissuedate'];
+        $created_at = $_POST['checkissuedate'];
+
+        $developmentchargepayments = [
+            "developmentchargeid" => $devchargesid,
+            "devchargepaymentmode" => "CHEQUE",
+            "devchargepaymentamount" => $payment_amount,
+            "devpaymentreceivedby" => $checkissuedto,
+            "devpaymentbankname" => $BankName,
+            "devpaymentreleaseddate" => $clearedat,
+            "devpaymentstatus" => $checkstatus,
+            "devpaymentdetails" => "Bank Name: $BankName, Cheque Number: $checknumber, IFSC Code: $ifsc_code",
+            "devpaymentcreatedat" => $created_at,
+            "devpaymentupdatedat" => RequestDataTypeDate
+        ];
+    } else if ($payment_mode == "cash") {
+        $created_at = $_POST['cashreceivedate'];
+        $developmentchargepayments = [
+            "developmentchargeid" => $devchargesid,
+            "devchargepaymentmode" => "CASH",
+            "devchargepaymentamount" => $payment_amount,
+            "devpaymentreceivedby" => $cashreceivername,
+            "devpaymentbankname" => "CASH",
+            "devpaymentreleaseddate" => $created_at,
+            "devpaymentstatus" => "PAID",
+            "devpaymentdetails" => "cash received by $cashreceivername",
+            "devpaymentcreatedat" => $created_at,
+            "devpaymentupdatedat" => RequestDataTypeDate
+        ];
+    } else if ($payment_mode == "banking") {
+        $payment_mode = $_POST['onlinepaymenttype'];
+        $created_at = $_POST['transactiondate'];
+        $developmentchargepayments = [
+            "developmentchargeid" => $devchargesid,
+            "devchargepaymentmode" => "ONLINE",
+            "devchargepaymentamount" => $payment_amount,
+            "devpaymentreceivedby" => "$payment_mode via $transactionId",
+            "devpaymentbankname" => $OnlineBankName,
+            "devpaymentreleaseddate" => $created_at,
+            "devpaymentstatus" => $transaction_status,
+            "devpaymentdetails" => "Pay Mode: $onlinepaymenttype, Bank Name: $OnlineBankName, Txn ID: $transactionId, Reference: $payment_details",
+            "devpaymentcreatedat" => RequestDataTypeDate,
+            "devpaymentupdatedat" => RequestDataTypeDate
+        ];
+    }
+
+    //insert payment into database
+    $Insert = INSERT("developmentchargepayments", $developmentchargepayments);
+    RESPONSE($Insert, "Payment received!", "Unable to receive payment at the moment!");
 }

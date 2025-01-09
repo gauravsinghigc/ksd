@@ -35,15 +35,10 @@ if (DB_ENV == "DEV") {
 
  //DB_ENV can be NULL, DEV or PROD.
 } else if (DB_ENV == "PROD") {
- // define("DB_SERVER_HOST", "localhost");
- // define("DB_SERVER_USER", "u965272668_ksd");
- // define("DB_SERVER_PASS", "Drc2][*Sp7");
- // define("DB_SERVER_DB_NAME", "u965272668_ksd");
- // define("DB_SERVER_PORT", "3306");
  define("DB_SERVER_HOST", "localhost");
- define("DB_SERVER_USER", "root");
- define("DB_SERVER_PASS", "");
- define("DB_SERVER_DB_NAME", "ksdgroup");
+ define("DB_SERVER_USER", "u965272668_ksd");
+ define("DB_SERVER_PASS", "Drc2][*Sp7");
+ define("DB_SERVER_DB_NAME", "u965272668_ksd");
  define("DB_SERVER_PORT", "3306");
 
  //die if DB_ENV is not set

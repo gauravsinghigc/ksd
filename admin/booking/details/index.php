@@ -3,201 +3,7 @@ require '../../../require/modules.php';
 require "../../../require/admin/sessionvariables.php";
 require '../../../include/admin/common.php';
 
-
-if (isset($_GET['id'])) {
-  $BookingViewId = $_GET['id'];
-  $_SESSION['BOOKING_VIEW_ID'] = $_GET['id'];
-} else {
-  $BookingViewId = $_SESSION['BOOKING_VIEW_ID'];
-}
-
-$GetBookings = SELECT("SELECT * FROM bookings where bookingid='$BookingViewId' ORDER BY bookingid DESC");
-$Bookings = mysqli_fetch_array($GetBookings);
-$bookingid = $Bookings['bookingid'];
-$project_name = $Bookings['project_name'];
-$project_area = $Bookings['project_area'];
-$unit_name = strtoupper($Bookings['unit_name']);
-$unit_area = $Bookings['unit_area'];
-$unit_rate = $Bookings['unit_rate'];
-$unit_cost = $Bookings['unit_cost'];
-$net_payable_amount = $Bookings['net_payable_amount'];
-$booking_date = $Bookings['booking_date'];
-$clearing_date = $Bookings['clearing_date'];
-$possession = $Bookings['possession'];
-$chargename = $Bookings['chargename'];
-$charges = $Bookings['charges'];
-$discountname = $Bookings['discountname'];
-$discount = $Bookings['discount'];
-$created_at = $Bookings['created_at'];
-$customer_id = $Bookings['customer_id'];
-$partner_id = $Bookings['partner_id'];
-$matches = preg_replace('/[^0-9.]+/', '', $unit_area);
-$unit_area_in_numbers = (int)$matches;
-$possession_notes = $Bookings['possession_notes'];
-$possession_update_date = $Bookings['possession_update_date'];
-$project_unit_id = $Bookings['project_unit_id'];
-$emi_months = $Bookings['emi_months'];
-$emi_last_date = date("d M, Y", strtotime($Bookings['booking_date'], strtotime("+$emi_months months")));
-$crn_no = $Bookings['crn_no'];
-$ref_no = $Bookings['ref_no'];
-$parking_status = $Bookings['parking_status'];
-
-//unit details
-$UnitSQL = "SELECT * FROM project_units where project_units_id='$project_unit_id'";
-$project_block_id = FETCH($UnitSQL, "project_block_id");
-$project_floor_id = FETCH($UnitSQL, "project_floor_id");
-
-$project_block_name = FETCH("SELECT project_block_name FROM project_blocks where project_block_id='$project_block_id'", "project_block_name");
-$projects_floor_name = FETCH("SELECT projects_floor_name from projects_floors WHERE projects_floors_id='$project_floor_id'", "projects_floor_name");
-$projects_floors_tag = FETCH("SELECT projects_floors_tag from projects_floors WHERE projects_floors_id='$project_floor_id'", "projects_floors_tag");
-$project_unit_bhk_type = FETCH("SELECT project_unit_bhk_type FROM project_units where project_units_id='$project_unit_id'", "project_unit_bhk_type");
-$project_unit_highlights = FETCH("SELECT project_unit_highlights FROM project_units where project_units_id='$project_unit_id'", "project_unit_highlights");
-$unit_broker_rate = FETCH("SELECT unit_broker_rate FROM project_units where project_units_id='$project_unit_id'", "unit_broker_rate");
-
-
-$agent_relation = FETCH("SELECT * FROM users where id='$customer_id'", "agent_relation");
-if ($agent_relation == 0) {
-  $Update = UPDATE("UPDATE users SET agent_relation='$partner_id' where id='$customer_id'");
-}
-
-//customer DETAILS
-$getusers = SELECT("SELECT * FROM users, user_address, user_roles where users.company_relation='" . company_id . "' and users.id='$customer_id' and users.id=user_address.user_id and users.user_role_id=user_roles.role_id");
-$count = 0;
-$customers = mysqli_fetch_array($getusers);
-$count++;
-$customer_name = $customers['name'];
-$customer_phone = $customers['phone'];
-$customer_email = $customers['email'];
-$user_street_address = $customers['user_street_address'];
-$user_area_locality = $customers['user_area_locality'];
-$user_city = $customers['user_city'];
-$user_state = $customers['user_state'];
-$user_pincode = $customers['user_pincode'];
-$user_country = $customers['user_country'];
-$executedcustomer_id = $customers['user_id'];
-$customer_user_profile_img = $customers['user_profile_img'];
-$user_status = $customers['user_status'];
-$created_at_c = $customers['created_at'];
-$user_role_id = $customers['user_role_id'];
-$user_role_name = $customers['role_name'];
-$agent_relation = $customers['agent_relation'];
-if ($user_status == "ACTIVE") {
-  $user_status_view = "<span class='text-success'><i class='fa fa-check-circle'></i> Active</span>";
-} else {
-  $user_status_view = "<span class='text-danger'><i class='fa fa-warning'></i> Inactive</span>";
-}
-if ($customer_user_profile_img == "user.png") {
-  $customer_user_profile_img = DOMAIN . "/storage/sys-img/$customer_user_profile_img";
-} else {
-  $customer_user_profile_img = DOMAIN . "/storage/users/$executedcustomer_id/img/$customer_user_profile_img";
-}
-
-//agent details
-$getusers_a = SELECT("SELECT * FROM users, user_roles where users.company_relation='" . company_id . "' and users.id='$partner_id' and users.user_role_id=user_roles.role_id");
-$count = 0;
-$agents = mysqli_fetch_array($getusers_a);
-$count++;
-$customer_id_a = $agents['id'];
-$customer_name_a = $agents['name'];
-$customer_phone_a = $agents['phone'];
-$customer_email_a = $agents['email'];
-$AddSQL = "SELECT * FROM user_address where user_id='$customer_id_a'";
-$user_street_address_a = FETCH($AddSQL, 'user_street_address');
-$user_area_locality_a = FETCH($AddSQL, 'user_area_locality');
-$user_city_a = FETCH($AddSQL, 'user_city');
-$user_state_a = FETCH($AddSQL, 'user_state');
-$user_pincode_a = FETCH($AddSQL, 'user_pincode');
-$user_country_a = FETCH($AddSQL, 'user_country');
-$executedcustomer_id_a = $agents['id'];
-$customer_user_profile_img_a = $agents['user_profile_img'];
-$user_status_a = $agents['user_status'];
-$created_at_a = $agents['created_at'];
-$user_role_id_a = $agents['user_role_id'];
-$user_role_name_a = $agents['role_name'];
-if ($user_status_a == "ACTIVE") {
-  $user_status_viea_a = "<span class='text-success'><i class='fa fa-check-circle'></i> Active</span>";
-} else {
-  $user_status_view_a = "<span class='text-danger'><i class='fa fa-warning'></i> Inactive</span>";
-}
-if ($customer_user_profile_img_a == "user.png") {
-  $customer_user_profile_img_a = DOMAIN . "/storage/sys-img/$customer_user_profile_img_a";
-} else {
-  $customer_user_profile_img_a = DOMAIN . "/storage/users/$customer_id_a/img/$customer_user_profile_img_a";
-}
-
-//last payment
-$GetPAYMENTS = CHECK("SELECT * FROM payments where bookingid='$bookingid' ORDER BY payment_id  DESC");
-if ($GetPAYMENTS == true) {
-  $GetPAYMENTS = SELECT("SELECT * FROM payments where bookingid='$bookingid' ORDER BY payment_id  DESC");
-  $payments = mysqli_fetch_array($GetPAYMENTS);
-  $payment_amount = $payments['payment_amount'];
-  $payment_mode = $payments['payment_mode'];
-  $slip_no = $payments['slip_no'];
-  $remark = $payments['remark'];
-  $payment_date = $payments['payment_date'];
-  $paymentcreatedat = $payments['created_at'];
-} else {
-  $payment_amount = "";
-  $payment_mode = "";
-  $slip_no = "";
-  $remark = "";
-  $payment_date = "";
-  $paymentcreatedat = "";
-}
-
-//total amount paid for thisbookings
-$TotalAmountPaid = 0;
-$SqlPayments = SELECT("SELECT * FROM payments where bookingid='$bookingid'");
-while ($FetchPayments = mysqli_fetch_array($SqlPayments)) {
-  $payment_mode = $FetchPayments['payment_mode'];
-  $payment_id = $FetchPayments['payment_id'];
-
-  if ($payment_mode == "cash") {
-    $TotalAmountPaid += $FetchPayments['net_paid'];
-    $paymentstatus = "Received";
-  } elseif ($payment_mode == "banking") {
-    $checkbankpayment = SELECT("SELECT * FROM online_payments where payment_id='$payment_id'");
-    $checkbankpaymentstatus = mysqli_fetch_assoc($checkbankpayment);
-    $paymentstatus = $checkbankpaymentstatus['transaction_status'];
-    if ($paymentstatus == "Success") {
-      $TotalAmountPaid += $FetchPayments['net_paid'];
-    } else {
-      $TotalAmountPaid += 0;
-    }
-  } elseif ($payment_mode == "check") {
-    $SqlChequepayments = SELECT("SELECT * FROM check_payments where payment_id='$payment_id'");
-    $FetchChequepayments = mysqli_fetch_assoc($SqlChequepayments);
-    $paymentstatus = $FetchChequepayments['checkstatus'];
-    if ($paymentstatus == "Clear") {
-      $TotalAmountPaid += $FetchPayments['net_paid'];
-    } else {
-      $TotalAmountPaid += 0;
-    }
-  }
-}
-$PaymentforProjects = $TotalAmountPaid;
-
-//total amount paid for developmemnt charges previous
-$AllDevPaidCharges1 = "SELECT * FROM developmentcharges, developmentchargepayments where developmentcharges.bookingid='$bookingid' and developmentcharges.devchargesid=developmentchargepayments.developmentchargeid and devpaymentstatus like '%RECEIVED%'";
-$AllDevPaidCharges2 = "SELECT * FROM developmentcharges, developmentchargepayments where developmentcharges.bookingid='$bookingid' and developmentcharges.devchargesid=developmentchargepayments.developmentchargeid and devpaymentstatus like '%PAID%'";
-$AllDevPaidCharges3 = "SELECT * FROM developmentcharges, developmentchargepayments where developmentcharges.bookingid='$bookingid' and developmentcharges.devchargesid=developmentchargepayments.developmentchargeid and devpaymentstatus like '%CLEAR%'";
-$AllDevPaidCharges4 = "SELECT * FROM developmentcharges, developmentchargepayments where developmentcharges.bookingid='$bookingid' and developmentcharges.devchargesid=developmentchargepayments.developmentchargeid and devpaymentstatus like '%SUCCESS%'";
-$NetDevPaidAmount = AMOUNT($AllDevPaidCharges4, "devchargepaymentamount") + AMOUNT($AllDevPaidCharges1, "devchargepaymentamount") + AMOUNT($AllDevPaidCharges2, "devchargepaymentamount") + AMOUNT($AllDevPaidCharges3, "devchargepaymentamount");
-$NetchargesPaid = $NetDevPaidAmount;
-if ($NetchargesPaid == null) {
-  $NetchargesPaid = 0;
-} else {
-  $NetchargesPaid = $NetchargesPaid;
-}
-
-//emiavriabel
-$emi_id = FETCH("SELECT * FROM booking_emis where booking_id='$bookingid'", "emi_id");
-
-//Booking id
-$MainBookingID = "B$bookingid/" . date("m/Y", strtotime($created_at));
-
-$BankLoanSql = "SELECT * FROM booking_loans where booking_main_id='$bookingid'";
-?>
+require "HeaderRequest/HeaderRequest.php"; ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -263,7 +69,9 @@ $BankLoanSql = "SELECT * FROM booking_loans where booking_main_id='$bookingid'";
                           <a href="<?php echo DOMAIN; ?>/admin/booking/booking_development_charges.php?id=<?php echo $bookingid; ?>" target="_blank" class="btn btn-sm btn-default"><i class="fa fa-print text-primary"></i> Other Payments</a>
                           <a href="../docs/welcome-letter.php?id=<?php echo $bookingid; ?>" target="_blank" class="btn btn-sm btn-default"><i class="fa fa-print"></i> Welcome Letter</a>
                           <a href="../docs/allotment.php?id=<?php echo $bookingid; ?>" target="_blank" class="btn btn-sm btn-default"><i class="fa fa-print"></i> Allotment Letter</a>
-                          <!--<a data-toggle="modal" data-target="#final_demand_notice" class="btn btn-sm btn-default"><i class="fa fa-print"></i> Final Demand Notice</a>-->
+                          <a href="../docs/re-allotment.php?id=<?php echo $bookingid; ?>" target="_blank" class="btn btn-sm btn-default"><i class="fa fa-print"></i> Re-Allotment Letter</a>
+                          <a href="../docs/re-welcome.php?id=<?php echo $bookingid; ?>" target="_blank" class="btn btn-sm btn-default"> Re-Welcome Letter</a>
+                          <a data-toggle="modal" data-target="#final_demand_notice" class="btn btn-sm btn-default"><i class="fa fa-print"></i> Final Demand Notice</a>
                         </div>
                       </div>
                       <div class="col-md-12">
@@ -319,14 +127,15 @@ $BankLoanSql = "SELECT * FROM booking_loans where booking_main_id='$bookingid'";
                         <div class="btn-group btn-group-md">
                           <a href="send-demand.php?id=<?php echo $bookingid; ?>" class="btn btn-sm btn-info"><i class="fa fa-print"></i> Demand Letter</a>
                           <a href="send-reminder.php?id=<?php echo $bookingid; ?>" class="btn btn-sm btn-info"><i class="fa fa-print"></i> Reminder Letter</a>
+                          <a href="maintenance-demand.php?id=<?php echo $bookingid; ?>" class="btn btn-sm btn-info"><i class="fa fa-print"></i> Maintenance Demand Letter</a>
                         </div>
                       </div>
 
                       <div class="col-md-6">
                         <h4><i class="fa fa-exchange"></i> Update Payment Records</h4>
-                        <a href="<?php echo DOMAIN; ?>/admin/payments/emi-payments/emi-pay.php?bid=<?php echo $bookingid; ?>&emi_id=<?php echo $emi_id; ?>" class="text-white fs-10 btn-sm btn btn-primary round <?php echo $hiddenbtn; ?>"><i class="fa fa-plus"></i> Receive Payment</a>
-                        <a href="<?php echo DOMAIN; ?>/admin/booking/development-charges/?b_id=<?php echo $BookingViewId; ?>" class="text-white fs-10 btn-sm btn btn-primary round <?php echo $hiddenbtn; ?>"><i class="fa fa-plus"></i> Add Dev & Other Charges</a>
-                        <a href="<?php echo DOMAIN; ?>/admin/payments/dev-payments/?b_id=<?php echo $BookingViewId; ?>" class="text-white fs-10 btn-sm btn btn-primary round <?php echo $hiddenbtn; ?>"><i class="fa fa-plus"></i> Receive Dev Payments</a>
+                        <a href="<?php echo DOMAIN; ?>/admin/payments/emi-payments/emi-pay.php?bid=<?php echo $bookingid; ?>&emi_id=<?php echo $emi_id; ?>" class="text-white fs-10 btn-sm btn btn-primary round <?php echo $hiddenbtn; ?>"><i class="fa fa-plus"></i> Collect Payment</a>
+                        <a href="<?php echo DOMAIN; ?>/admin/payments/dev-payments/add.php?b_id=<?php echo $BookingViewId; ?>" class="text-white fs-10 btn-sm btn btn-primary round <?php echo $hiddenbtn; ?>"><i class="fa fa-plus"></i> Receive Maintenance Payment</a>
+                        <a href="<?php echo DOMAIN; ?>/admin/payments/more-payments/add.php?b_id=<?php echo $BookingViewId; ?>" class="text-white fs-10 btn-sm btn btn-primary round <?php echo $hiddenbtn; ?>"><i class="fa fa-plus"></i> Receive Other Payment</a>
                       </div>
                       <div class="col-md-6">
                         <h4><br></h4>
@@ -394,7 +203,6 @@ $BankLoanSql = "SELECT * FROM booking_loans where booking_main_id='$bookingid'";
                                     </p>
                                   </div>
                                   <div class="clearfix"></div>
-
                                 </div>
                               </div>
                             </div>
@@ -571,10 +379,6 @@ $BankLoanSql = "SELECT * FROM booking_loans where booking_main_id='$bookingid'";
                       <h4 class="section-heading app-bg">Booking Details</h4>
                       <table class="table table-striped">
                         <tr>
-                          <th>Parking Status</th>
-                          <td><?php echo $parking_status; ?></td>
-                        </tr>
-                        <tr>
                           <th>Booking ID</th>
                           <td><span class="text-info text-decoration-underline"><?php echo $MainBookingID; ?></span></td>
                         </tr>
@@ -586,46 +390,20 @@ $BankLoanSql = "SELECT * FROM booking_loans where booking_main_id='$bookingid'";
                           <th>Project Area</th>
                           <td><?php echo $project_area; ?></td>
                         </tr>
-                        <?php
-                        //unit details
-                        $UnitSQL = "SELECT * FROM project_units where project_units_id='$project_unit_id'";
-                        $project_block_id = FETCH($UnitSQL, "project_block_id");
-                        $project_floor_id = FETCH($UnitSQL, "project_floor_id");
-
-                        $project_block_name = FETCH("SELECT project_block_name FROM project_blocks where project_block_id='$project_block_id'", "project_block_name");
-                        $projects_floor_name = FETCH("SELECT projects_floor_name from projects_floors WHERE projects_floors_id='$project_floor_id'", "projects_floor_name");
-                        $projects_floors_tag = FETCH("SELECT projects_floors_tag from projects_floors WHERE projects_floors_id='$project_floor_id'", "projects_floors_tag");
-                        $project_unit_bhk_type = FETCH("SELECT project_unit_bhk_type FROM project_units where project_units_id='$project_unit_id'", "project_unit_bhk_type");
-                        $project_unit_highlights = FETCH("SELECT project_unit_highlights FROM project_units where project_units_id='$project_unit_id'", "project_unit_highlights");
-                        $unit_broker_rate = FETCH("SELECT unit_broker_rate FROM project_units where project_units_id='$project_unit_id'", "unit_broker_rate");
-
-                        ?>
                         <tr>
-                          <th>Block Number</th>
-                          <td><?php echo $project_block_name; ?></td>
-                        </tr>
-                        <tr>
-                          <th>Floor Number</th>
-                          <td><?php echo $projects_floor_name; ?></td>
-                        </tr>
-                        <tr>
-                          <th>BHK Details</th>
-                          <td><?php echo $project_unit_bhk_type; ?></td>
-                        </tr>
-                        <tr>
-                          <th>Unit No</th>
+                          <th>Plot No</th>
                           <td><?php echo $unit_name; ?></td>
                         </tr>
                         <tr>
-                          <th>Unit Area</th>
+                          <th>Plot Area</th>
                           <td><?php echo $unit_area; ?></td>
                         </tr>
                         <tr>
-                          <th>Unit Rate</th>
+                          <th>Plot Rate</th>
                           <td>Rs.<?php echo $unit_rate; ?> / sq area</td>
                         </tr>
                         <tr>
-                          <th>Unit Cost</th>
+                          <th>Plot Cost</th>
                           <td><span>Rs.<?php echo $unit_cost; ?></span></td>
                         </tr>
                         <?php if ($charges != 0) { ?>
@@ -822,63 +600,21 @@ $BankLoanSql = "SELECT * FROM booking_loans where booking_main_id='$bookingid'";
                       </tr>
                     </table>
                   </div>
-                  <div class="col-md-6">
-                    <h4 class="section-heading app-bg">Other Charges</h4>
-                    <table class="table table-striped text-right" align="right">
-                      <tr class="text-right">
-                        <th class="text-left">Action</th>
-                        <th class="text-right">RefID</th>
-                        <th class="text-center">Name</th>
-                        <th class="text-center">Type</th>
-                        <th class="text-center">Status</th>
-                        <th class="text-right">Amount</th>
-                      </tr>
-                      <?php
-                      $SqlDevcharges = SELECT("SELECT * FROM developmentcharges, bookings where developmentcharges.bookingid='$bookingid' and developmentcharges.bookingid=bookings.bookingid ORDER by developmentcharges.devchargesid ASC");
-                      $netdevelopmentcharges = 0;
-                      while ($FetchDevCharges = mysqli_fetch_array($SqlDevcharges)) {
-                        $devchargesid = $FetchDevCharges['devchargesid'];
-                        $bookingid2 = $FetchDevCharges['bookingid'];
-                        $created_at2 = $FetchDevCharges['created_at'];
-                        $developmentchargetitle = $FetchDevCharges['developmentchargetitle'];
-                        $developmentchargetype = $FetchDevCharges['developmentchargetype'];
-                        $developmentcharge = $FetchDevCharges['developmentcharge'];
-                        $developementchargeamount = $FetchDevCharges['developementchargeamount'];
-                        $developmentchargecreatedat = $FetchDevCharges['developmentchargecreatedat'];
-                        $developmentchargestatus = $FetchDevCharges['developmentchargestatus'];
-                        $MainBookingID2 = "B$bookingid2/" . date("m/Y", strtotime($created_at2));
-                        $netdevelopmentcharges += $developementchargeamount; ?>
-                        <tr>
-                          <td><a href="update-dev-charges.php?id=<?php echo $bookingid; ?>&did=<?php echo $devchargesid; ?>" class='btn btn-sm btn-default'><i class='fa fa-edit text-primary'></i> Update</a></td>
-                          <td>DC<?php echo $devchargesid; ?></td>
-                          <td><?php echo $developmentchargetitle; ?></td>
-                          <td class='text-center'><span class='fs-11'><?php echo $developmentchargetype; ?></span></td>
-                          <td><?php echo $developmentchargestatus; ?></td>
-                          <td><span class="text-success fs-14">Rs.<?php echo $developementchargeamount; ?></span></td>
-                        </tr>
-                      <?php } ?>
-                      <tr>
-                        <td colspan="5"><span class="text-grey">Total Development Charges</span></td>
-                        <td>
-                          <span class="text-primary fs-16"> Rs.<?php echo $netdevelopmentcharges; ?></span>
-                        </td>
-                      </tr>
-                    </table>
-                  </div>
+
 
                   <div class="col-md-6 table-payments">
-                    <h4 class="section-heading app-bg">Other Charge Payments</h4>
+                    <h4 class="section-heading app-bg">Maintenance Payments</h4>
                     <table class="table table-striped text-right" align="right">
                       <tr class="text-right">
                         <th>Receipt</th>
-                        <th align="right" class="text-right">RefID</th>
+                        <th align="right" class="text-right">Title</th>
                         <th align="right" class="text-right">Mode</th>
                         <th align="right" class="text-right">PaidAt</th>
                         <th align="right" class="text-right">Status</th>
                         <th align="right" class="text-right">Amount</th>
                       </tr>
                       <?php
-                      $TotalAmountPaid2 = SELECT("SELECT * FROM developmentchargepayments, developmentcharges where developmentcharges.bookingid='$BookingViewId' and developmentchargepayments.developmentchargeid=developmentcharges.devchargesid");
+                      $TotalAmountPaid2 = SELECT("SELECT * FROM developmentchargepayments, developmentcharges where developmentchargetype like '%Maintenance%' and developmentcharges.bookingid='$BookingViewId' and developmentchargepayments.developmentchargeid=developmentcharges.devchargesid");
                       $netdevelopmentchargespaid = 0;
                       while ($fetchtotalpayment2 = mysqli_fetch_array($TotalAmountPaid2)) {
                         $developmentchargeid = $fetchtotalpayment2['developmentchargeid'];
@@ -894,13 +630,14 @@ $BankLoanSql = "SELECT * FROM booking_loans where booking_main_id='$bookingid'";
                         $devpaymentupdatedat = $fetchtotalpayment2['devpaymentupdatedat'];
                         $netdevelopmentchargespaid += $devchargepaymentamount;
                         $devchargepaymentid = $fetchtotalpayment2['devchargepaymentid'];
+                        $developmentchargetitle = $fetchtotalpayment2['developmentchargetitle'];
                       ?>
                         <tr>
                           <td align="left" class="text-left">
-                            <a href="../d-receipt.php?id=<?php echo $bookingid; ?>&pid=<?php echo $devchargepaymentid; ?>" class="btn btn-sm btn-default" target="_blank"><i class="fa fa-file-pdf-o text-danger"></i> Receipt</a>
+                            <a href="../m-receipt.php?id=<?php echo $bookingid; ?>&pid=<?php echo $devchargepaymentid; ?>" class="btn btn-sm btn-default" target="_blank"><i class="fa fa-file-pdf-o text-danger"></i> Receipt</a>
                             <a href="edit-dev-charge.php?id=<?php echo $bookingid; ?>&pid=<?php echo $devchargepaymentid; ?>" class="btn btn-sm btn-default"><i class="fa fa-edit text-primary"></i> Edit</a>
                           </td>
-                          <td><span class="text-info">DC<?php echo $developmentchargeid; ?></span></td>
+                          <td><span class="text-info"><?php echo $developmentchargetitle; ?></span></td>
                           <td><?php echo $devchargepaymentmode; ?></td>
                           <td><?php echo DATE_FORMATE2("d M, Y", $devpaymentreleaseddate); ?></td>
                           <td>
@@ -915,27 +652,56 @@ $BankLoanSql = "SELECT * FROM booking_loans where booking_main_id='$bookingid'";
                           <span class="text-primary fs-16"> Rs.<?php echo $netdevelopmentchargespaid; ?></span>
                         </td>
                       </tr>
-                      <tr>
-                        <td colspan="5"><span class="text-grey">Net Payable</span></td>
-                        <td>
-                          <span class="text-black fs-15"> Rs.<?php echo $netdevelopmentcharges; ?></span>
-                        </td>
+                    </table>
+                  </div>
+                  <div class="col-md-6 table-payments">
+                    <h4 class="section-heading app-bg">Other Payments</h4>
+                    <table class="table table-striped text-right" align="right">
+                      <tr class="text-right">
+                        <th>Receipt</th>
+                        <th align="right" class="text-right">Title</th>
+                        <th align="right" class="text-right">Mode</th>
+                        <th align="right" class="text-right">PaidAt</th>
+                        <th align="right" class="text-right">Status</th>
+                        <th align="right" class="text-right">Amount</th>
                       </tr>
+                      <?php
+                      $TotalAmountPaid2 = SELECT("SELECT * FROM developmentchargepayments, developmentcharges where developmentchargetype!='Maintenance' and developmentcharges.bookingid='$BookingViewId' and developmentchargepayments.developmentchargeid=developmentcharges.devchargesid");
+                      $netdevelopmentchargespaid = 0;
+                      while ($fetchtotalpayment2 = mysqli_fetch_array($TotalAmountPaid2)) {
+                        $developmentchargeid = $fetchtotalpayment2['developmentchargeid'];
+                        $devchargepaymentmode = $fetchtotalpayment2['devchargepaymentmode'];
+                        $devchargepaymentamount = $fetchtotalpayment2['devchargepaymentamount'];
+                        $devchargepaymentnotes = html_entity_decode(SECURE($fetchtotalpayment2['devchargepaymentnotes'], "d"));
+                        $devpaymentreceivedby = $fetchtotalpayment2['devpaymentreceivedby'];
+                        $devpaymentbankname = $fetchtotalpayment2['devpaymentbankname'];
+                        $devpaymentreleaseddate = $fetchtotalpayment2['devpaymentreleaseddate'];
+                        $devpaymentstatus = $fetchtotalpayment2['devpaymentstatus'];
+                        $devpaymentdetails = html_entity_decode(SECURE($fetchtotalpayment2['devpaymentdetails'], "d"));
+                        $devpaymentcreatedat = $fetchtotalpayment2['devpaymentcreatedat'];
+                        $devpaymentupdatedat = $fetchtotalpayment2['devpaymentupdatedat'];
+                        $netdevelopmentchargespaid += $devchargepaymentamount;
+                        $devchargepaymentid = $fetchtotalpayment2['devchargepaymentid'];
+                        $developmentchargetitle = $fetchtotalpayment2['developmentchargetitle'];
+                      ?>
+                        <tr>
+                          <td align="left" class="text-left">
+                            <a href="../d-receipt.php?id=<?php echo $bookingid; ?>&pid=<?php echo $devchargepaymentid; ?>" class="btn btn-sm btn-default" target="_blank"><i class="fa fa-file-pdf-o text-danger"></i> Receipt</a>
+                            <a href="edit-dev-charge.php?id=<?php echo $bookingid; ?>&pid=<?php echo $devchargepaymentid; ?>" class="btn btn-sm btn-default"><i class="fa fa-edit text-primary"></i> Edit</a>
+                          </td>
+                          <td><span class="text-info"><?php echo $developmentchargetitle; ?></span></td>
+                          <td><?php echo $devchargepaymentmode; ?></td>
+                          <td><?php echo DATE_FORMATE2("d M, Y", $devpaymentreleaseddate); ?></td>
+                          <td>
+                            <?php echo $devpaymentstatus; ?>
+                          </td>
+                          <td><span class="text-success fs-14">Rs.<?php echo $devchargepaymentamount; ?></span></td>
+                        </tr>
+                      <?php } ?>
                       <tr>
-                        <td colspan="5"><span class="text-grey">Balance</span></td>
+                        <td colspan="5"><span class="text-grey">Total Paid</span></td>
                         <td>
-                          <span class="text-danger fs-14">
-                            Rs.
-                            <?php
-                            $tolerance = 1e-10;  // or any other small value based on your requirements
-                            if (abs($netdevelopmentcharges - $netdevelopmentchargespaid) < $tolerance) {
-                              $result = 0;
-                            } else {
-                              $result = $netdevelopmentcharges - $netdevelopmentchargespaid;
-                            }
-                            echo $result;
-                            ?>
-                          </span>
+                          <span class="text-primary fs-16"> Rs.<?php echo $netdevelopmentchargespaid; ?></span>
                         </td>
                       </tr>
                     </table>

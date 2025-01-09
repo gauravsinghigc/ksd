@@ -354,6 +354,10 @@ $numbersOnly = preg_replace("/[^0-9]/", "", $inputString);
                         </td>
                     </tr>
                     <tr class="striped text-left">
+                        <th class="text-left" align="left">Payment Title:</th>
+                        <td><?php echo FETCH($DevSql, "developmentchargetitle"); ?></td>
+                    </tr>
+                    <tr class="striped text-left">
                         <th class="text-left" align="left">Paid Amount</th>
                         <td>Rs.<?php echo FETCH($DevChargeSql, "devchargepaymentamount"); ?>
                             (<span><?php echo PriceInWords(FETCH($DevChargeSql, "devchargepaymentamount")); ?></span>)</td>
@@ -380,7 +384,7 @@ $numbersOnly = preg_replace("/[^0-9]/", "", $inputString);
                     </tr>
                     <tr class="striped text-left">
                         <th class="text-left" align="left">Payment Notes:</th>
-                        <td><?php echo FETCH($DevChargeSql, "devchargepaymentnotes"); ?></td>
+                        <td><?php echo SECURE(FETCH($DevSql, "developmentchargedescription"), "d"); ?></td>
                     </tr>
                     <tr class="striped text-left">
                         <th class="text-left" align="left">Payment Status</th>

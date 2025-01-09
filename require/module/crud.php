@@ -165,7 +165,7 @@ function AMOUNT($SQL, $T)
     $TotalAmountPaid = SELECT("$SQL");
     $TotalAmount = 0;
     while ($fetchtotalpayment = mysqli_fetch_array($TotalAmountPaid)) {
-        $TotalAmount += (int)$fetchtotalpayment[$T];
+        $TotalAmount += $fetchtotalpayment["$T"];
     }
     if ($TotalAmount == 0 or $TotalAmount == null) {
         $TotalAmount = 0;
@@ -199,7 +199,7 @@ function SUGGEST($table = "false", $column, $order, $enc = null)
 }
 
 
-//fetch values
+//fetch values 
 function FETCH($SQL, $data, $null = "", $die = false)
 {
     if ($die == true) {
@@ -239,7 +239,7 @@ function FetchConvertIntoArray($sql, $array = false)
 }
 
 
-//upate table
+//upate table 
 function UPDATE_TABLE($sqltables, array $colums, $conditions, $die = false)
 {
     $AvalableArrays = count($colums) - 1;
@@ -267,7 +267,7 @@ function UPDATE_TABLE($sqltables, array $colums, $conditions, $die = false)
     }
 }
 
-//delete
+//delete 
 function DELETE_FROM($table, $conditions, $die = false)
 {
 
@@ -278,7 +278,7 @@ function DELETE_FROM($table, $conditions, $die = false)
         $Delete = DELETE("DELETE FROM $table WHERE $conditions");
     }
 
-    //die entry
+    //die entry 
     if ($die == true) {
         die($Delete);
     }
@@ -291,7 +291,7 @@ function DELETE_FROM($table, $conditions, $die = false)
 }
 
 
-//upate table
+//upate table 
 function UPDATE_DATA($sqltables, array $colums, $conditions, $die = false)
 {
     $AvalableArrays = count($colums) - 1;

@@ -31,9 +31,8 @@ function SENDMAILS($Subject, $Title, $Sendto, $MAIL_MSG, $die = false)
   $mail->Port       = 465;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
 
   //Recipients
-  $mail->setFrom('alerts@ksdyashvihar.in', APP_NAME);
+  $mail->setFrom('alerts@ksdyashvihar.in');
   $mail->addAddress("$Sendto");                                 //Add a recipient
-  $mail->addReplyTo('info@example.com', 'Information');
 
   //Attachments
   //$mail->addAttachment('/var/tmp/file.tar.gz');         //Add attachments

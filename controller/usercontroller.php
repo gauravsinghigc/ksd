@@ -25,6 +25,7 @@ if (isset($_POST['update_customers'])) {
  $user_state = $_POST['user_state'];
  $user_pincode = $_POST['user_pincode'];
  $user_status = $_POST['user_status'];
+ $user_role_id = $_POST['user_role_id'];
  $user_country = SECURE($_POST['user_country'], "d");
 
  $checkPhone = CHECK("SELECT * FROM users where phone='$phone' and id!='$customer_id'");

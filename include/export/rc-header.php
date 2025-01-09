@@ -1,6 +1,6 @@
-<div style="text-align: center;display: block;">
- <img src="<?php echo company_logo; ?>" style="width:5rem; height:5rem;box-shadow:0px 0px 1px grey;">
- <h3 style="font-size:30px;margin-top:0px;margin-bottom:0.25rem;"><?php echo company_name; ?></h3>
+<div style="text-align: center;display: flex;align-content: space-around; justify-content: center;">
+ <img src="<?php echo company_logo; ?>" style="width:2.3rem; height:2.3rem;margin-right:7px;display:none;"><br>
+ <span style="font-size:30px;"><?php echo company_name; ?></span>
 </div>
 <div style="text-align: center;display: flex;align-content: space-around; justify-content: center;">
  <p style="margin-bottom: 3px;margin-top: -5px;"><?php echo company_address2; ?></p>

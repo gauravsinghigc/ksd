@@ -1,0 +1,156 @@
+          By Fanny
+[ Jateng Cyber Team ]
+
+Type: Vulnerability Version
+[ vsftpd 3.0.3 ]
+
+message from me: "are you ready to exploit?"
+--------------------------------------------------------------------------------------
+why19.iitmandi.ac.in (14.139.34.10)
+PORT     SERVICE     VERSION
+21              ftp           vsftpd 3.0.3
+--------------------------------------------------------------------------------------
+www.c2e2himalaya.iitmandi.ac.in (14.139.34.10)
+PORT     SERVICE     VERSION
+21              ftp           vsftpd 3.0.3
+--------------------------------------------------------------------------------------
+ftp.iitmandi.ac.in (14.139.34.10)
+PORT     SERVICE     VERSION
+21              ftp           vsftpd 3.0.3
+--------------------------------------------------------------------------------------
+compl.iitmandi.ac.in (14.139.34.10)
+PORT     SERVICE     VERSION
+21              ftp           vsftpd 3.0.3
+--------------------------------------------------------------------------------------
+ecell.iitmandi.ac.in (14.139.34.10)
+PORT     SERVICE     VERSION
+21              ftp           vsftpd 3.0.3
+--------------------------------------------------------------------------------------
+cpanel.iitmandi.ac.in (204.197.248.190)
+PORT     SERVICE     VERSION
+21              ftp     Pure-FTPd
+
+aldf.iitmandi.ac.in (14.139.34.10)
+PORT     SERVICE     VERSION
+21              ftp           vsftpd 3.0.3
+--------------------------------------------------------------------------------------
+srijan.iitmandi.ac.in (14.139.34.10)
+PORT     SERVICE     VERSION
+21              ftp           vsftpd 3.0.3
+--------------------------------------------------------------------------------------
+iitmandi.ac.in (204.197.248.190)
+PORT     SERVICE     VERSION
+21              ftp     Pure-FTPd
+
+mic.iitmandi.ac.in (14.139.34.10)
+PORT     SERVICE     VERSION
+21              ftp           vsftpd 3.0.3
+--------------------------------------------------------------------------------------
+research.iitmandi.ac.in (14.139.34.10)
+PORT     SERVICE     VERSION
+21              ftp           vsftpd 3.0.3
+--------------------------------------------------------------------------------------
+ncvpripg.iitmandi.ac.in (14.139.34.10)
+PORT     SERVICE     VERSION
+21              ftp           vsftpd 3.0.3
+--------------------------------------------------------------------------------------
+manas.iitmandi.ac.in (14.139.34.10)
+PORT     SERVICE     VERSION
+21              ftp           vsftpd 3.0.3
+--------------------------------------------------------------------------------------
+placements.iitmandi.ac.in (204.197.248.190)
+PORT     SERVICE     VERSION
+21              ftp     Pure-FTPd
+
+modelinglab.iitmandi.ac.in (14.139.34.10)
+PORT     SERVICE     VERSION
+21              ftp           vsftpd 3.0.3
+--------------------------------------------------------------------------------------
+piicon2019.iitmandi.ac.in (14.139.34.10)
+PORT     SERVICE     VERSION
+21              ftp           vsftpd 3.0.3
+--------------------------------------------------------------------------------------
+ieee.iitmandi.ac.in (14.139.34.10)
+PORT     SERVICE     VERSION
+21              ftp           vsftpd 3.0.3
+--------------------------------------------------------------------------------------
+ewok.iitmandi.ac.in (14.139.34.10)
+PORT     SERVICE     VERSION
+21              ftp           vsftpd 3.0.3
+--------------------------------------------------------------------------------------
+www.rinai.iitmandi.ac.in (14.139.34.10)
+PORT     SERVICE     VERSION
+21              ftp           vsftpd 3.0.3
+--------------------------------------------------------------------------------------
+www.iitmandi.ac.in (204.197.248.190)
+PORT     SERVICE     VERSION
+21              ftp     Pure-FTPd
+
+c2e2himalaya.iitmandi.ac.in (14.139.34.10)
+PORT     SERVICE     VERSION
+21              ftp           vsftpd 3.0.3
+--------------------------------------------------------------------------------------
+www.ewok.iitmandi.ac.in (14.139.34.10)
+PORT     SERVICE     VERSION
+21              ftp           vsftpd 3.0.3
+--------------------------------------------------------------------------------------
+birds.iitmandi.ac.in (14.139.34.10)
+PORT     SERVICE     VERSION
+21              ftp           vsftpd 3.0.3
+--------------------------------------------------------------------------------------
+guesthouse.iitmandi.ac.in (14.139.34.10)
+PORT     SERVICE     VERSION
+21              ftp           vsftpd 3.0.3
+--------------------------------------------------------------------------------------
+sadas.iitmandi.ac.in (14.139.34.10)
+PORT     SERVICE     VERSION
+21              ftp           vsftpd 3.0.3
+--------------------------------------------------------------------------------------
+whrda22.iitmandi.ac.in (14.139.34.10)
+PORT     SERVICE     VERSION
+21              ftp           vsftpd 3.0.3
+--------------------------------------------------------------------------------------
+webmail.iitmandi.ac.in (204.197.248.190)
+PORT     SERVICE     VERSION
+21              ftp     Pure-FTPd
+
+aiidaworkshop.iitmandi.ac.in (14.139.34.10)
+PORT     SERVICE     VERSION
+21              ftp           vsftpd 3.0.3
+--------------------------------------------------------------------------------------
+c4dfed.iitmandi.ac.in (14.139.34.10)
+PORT     SERVICE     VERSION
+21              ftp           vsftpd 3.0.3
+--------------------------------------------------------------------------------------
+infocomm.iitmandi.ac.in (14.139.34.10)
+PORT     SERVICE     VERSION
+21              ftp           vsftpd 3.0.3
+--------------------------------------------------------------------------------------
+scri.iitmandi.ac.in (14.139.34.10)
+PORT     SERVICE     VERSION
+21              ftp           vsftpd 3.0.3
+--------------------------------------------------------------------------------------
+scs.iitmandi.ac.in (14.139.34.10)
+PORT     SERVICE     VERSION
+21              ftp           vsftpd 3.0.3
+--------------------------------------------------------------------------------------
+avl.iitmandi.ac.in (14.139.34.10)
+PORT     SERVICE     VERSION
+21              ftp           vsftpd 3.0.3
+--------------------------------------------------------------------------------------
+noas.iitmandi.ac.in (14.139.34.10)
+PORT     SERVICE     VERSION
+21              ftp           vsftpd 3.0.3
+--------------------------------------------------------------------------------------
+iccms2019.iitmandi.ac.in (14.139.34.10)
+PORT     SERVICE     VERSION
+21              ftp           vsftpd 3.0.3
+--------------------------------------------------------------------------------------
+rinai.iitmandi.ac.in (14.139.34.10)
+PORT     SERVICE     VERSION
+21              ftp           vsftpd 3.0.3
+--------------------------------------------------------------------------------------
+wmlmia.iitmandi.ac.in (14.139.34.10)
+PORT     SERVICE     VERSION
+21              ftp           vsftpd 3.0.3
+--------------------------------------------------------------------------------------

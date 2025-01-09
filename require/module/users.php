@@ -1,5 +1,5 @@
 <?php
-//get user address
+//get user address 
 function UserAddress($CustomerId)
 {
   $UserStreetAddress = FETCH("SELECT * FROM user_addresses where UserAddressUserId='$CustomerId'", "UserStreetAddress");
@@ -15,10 +15,10 @@ function UserAddress($CustomerId)
   return $CompleteAddress;
 }
 
-//user salutation
+//user salutation 
 define("SALUTATION", array("Mr.", "Mrs.", "Miss", "M/s", "Prof", "Dr."));
 
-//function
+//function 
 function UserDetails($UserId)
 {
   $Sql = "SELECT * FROM users where id='$UserId'";
@@ -59,41 +59,3 @@ function UserDetails($UserId)
     NoData("No User Found!");
   }
 }
-
-DEFINE("INDIAN_STATES", $states = [
-  "" => "Select State",
-  "Andhra Pradesh" => "Andhra Pradesh",
-  "Arunachal Pradesh" => "Arunachal Pradesh",
-  "Assam" => "Assam",
-  "Bihar" => "Bihar",
-  "Chhattisgarh" => "Chhattisgarh",
-  "Goa" => "Goa",
-  "Gujarat" => "Gujarat",
-  "Haryana" => "Haryana",
-  "Himachal Pradesh" => "Himachal Pradesh",
-  "Jharkhand" => "Jharkhand",
-  "Karnataka" => "Karnataka",
-  "Kerala" => "Kerala",
-  "Madhya Pradesh" => "Madhya Pradesh",
-  "Maharashtra" => "Maharashtra",
-  "Manipur" => "Manipur",
-  "Meghalaya" => "Meghalaya",
-  "Mizoram" => "Mizoram",
-  "Nagaland" => "Nagaland",
-  "Odisha" => "Odisha",
-  "Punjab" => "Punjab",
-  "Rajasthan" => "Rajasthan",
-  "Sikkim" => "Sikkim",
-  "Tamil Nadu" => "Tamil Nadu",
-  "Telangana" => "Telangana",
-  "Tripura" => "Tripura",
-  "Uttar Pradesh" => "Uttar Pradesh",
-  "Uttarakhand" => "Uttarakhand",
-  "West Bengal" => "West Bengal",
-  "Andaman and Nicobar Islands" => "Andaman and Nicobar Islands",
-  "Chandigarh" => "Chandigarh",
-  "Dadra and Nagar Haveli and Daman and Diu" => "Dadra and Nagar Haveli and Daman and Diu",
-  "Delhi" => "Delhi",
-  "Lakshadweep" => "Lakshadweep",
-  "Puducherry" => "Puducherry"
-]);
